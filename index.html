@@ -39,14 +39,15 @@
       filter: drop-shadow(0 0 20px rgba(255,255,255,0.3));
     }
 
+    /* 👇 ÓVALO AJUSTADO */
     .reflection {
       position: absolute;
-      top: 18%;
-      left: 22%;
-      width: 56%;
-      height: 64%;
+      top: 22%;
+      left: 18%;
+      width: 64%;   /* más ancho */
+      height: 50%;  /* menos alto */
       overflow: hidden;
-      border-radius: 50%;
+      border-radius: 50% / 40%; /* óvalo real */
       box-shadow: inset 0 0 20px rgba(255,255,255,0.3);
     }
 
@@ -70,7 +71,6 @@
       to { opacity: 1; }
     }
 
-    /* Botones mágicos */
     .magic-btn {
       background: linear-gradient(45deg, #ffd700, #ffae42);
       border: none;
@@ -91,7 +91,6 @@
       box-shadow: 0 0 25px rgba(255, 223, 128, 1);
     }
 
-    /* Destellos flotantes */
     .sparkle {
       position: absolute;
       width: 4px;
@@ -128,7 +127,6 @@
     <button class="magic-btn" id="downloadBtn" style="display:none;">💎 Descargar mi revelación 💎</button>
   </div>
 
-  <!-- Destellos dinámicos -->
   <script>
     function createSparkles() {
       for (let i = 0; i < 20; i++) {
@@ -143,7 +141,6 @@
     }
     setInterval(createSparkles, 1000);
 
-    // Mostrar imagen en espejo
     document.getElementById('imageUpload').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
@@ -157,7 +154,6 @@
       }
     });
 
-    // Descargar revelación
     document.getElementById('downloadBtn').addEventListener('click', function() {
       const canvas = document.createElement('canvas');
       const frame = document.querySelector('.mirror-frame');
@@ -165,24 +161,39 @@
       canvas.height = frame.offsetHeight;
       const ctx = canvas.getContext('2d');
 
-      // Cargar imagen espejo
       const frameImg = new Image();
       frameImg.src = "Espejo.png";
       frameImg.onload = () => {
         ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
 
-        // Cargar foto usuario
         const userImg = new Image();
         userImg.src = document.getElementById('uploadedImage').src;
         userImg.onload = () => {
+
           ctx.save();
+
+          /* 👇 MISMA FORMA QUE CSS */
           ctx.beginPath();
-          ctx.ellipse(canvas.width/2, canvas.height/2, canvas.width*0.25, canvas.height*0.35, 0, 0, Math.PI*2);
+          ctx.ellipse(
+            canvas.width * 0.5,
+            canvas.height * 0.47,
+            canvas.width * 0.32,   // más ancho
+            canvas.height * 0.25,  // menos alto
+            0, 0, Math.PI * 2
+          );
           ctx.clip();
-          ctx.drawImage(userImg, canvas.width*0.22, canvas.height*0.18, canvas.width*0.56, canvas.height*0.64);
+
+          /* 👇 AJUSTE EXACTO */
+          ctx.drawImage(
+            userImg,
+            canvas.width * 0.18,
+            canvas.height * 0.22,
+            canvas.width * 0.64,
+            canvas.height * 0.50
+          );
+
           ctx.restore();
 
-          // Texto mágico
           ctx.fillStyle = "gold";
           ctx.font = "30px 'Great Vibes', cursive";
           ctx.textAlign = "center";
@@ -190,7 +201,6 @@
           ctx.shadowBlur = 10;
           ctx.fillText("✨ Tu reflejo revela tu divinidad ✨", canvas.width/2, canvas.height - 20);
 
-          // Descargar
           const link = document.createElement('a');
           link.download = "mi-revelacion.png";
           link.href = canvas.toDataURL("image/png");
